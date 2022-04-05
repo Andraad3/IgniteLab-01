@@ -1,16 +1,27 @@
-import { useUser } from "@auth0/nextjs-auth0"
+/* eslint-disable @next/next/no-html-link-for-pages */
+import { getSession } from "@auth0/nextjs-auth0"
+import { GetServerSideProps } from "next"
 
 export default function Home() {
+  return null
+}
 
-  const { user } = useUser()
+export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
+  const session = getSession(req, res)
 
-  return (
-    <div>
-      <h1>Hello World</h1>
-
-      <pre>{JSON.stringify(user, null, 2)}</pre>
-
-      <a href="/api/auth/login">Login</a>
-    </div>
-  )
+  if(!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/login',
+        permanent: false,
+      },
+    }
+  } else {
+    return {
+      redirect: {
+        destination: '/app',
+        permanent: false,
+      },
+    }
+  }
 }
